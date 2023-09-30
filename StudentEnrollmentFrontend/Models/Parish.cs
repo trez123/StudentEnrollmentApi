@@ -7,6 +7,6 @@ namespace StudentEnrollmentFrontend.Models
         [Key]
         public int Id { get; set; }
 
-        public string? ParishName { get; set; }*
+        public string? ParishName { get; set; }
     }
 }

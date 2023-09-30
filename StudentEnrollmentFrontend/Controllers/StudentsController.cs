@@ -52,7 +52,7 @@ namespace StudentEnrollmentFrontend.Controllers
             List<Parish> ParishList = JsonConvert.DeserializeObject<List<Parish>>(Parishes)!;
             List<Size> SizeList = JsonConvert.DeserializeObject<List<Size>>(Sizes)!;
 
-            var viewModel = new StudentVM
+            StudentVM viewModel = new()
             {
                 ProgramList = CourseList.Select(data => new SelectListItem
                 {
@@ -81,9 +81,16 @@ namespace StudentEnrollmentFrontend.Controllers
                 var student = studentResponse.Content.ReadAsStringAsync().Result;
 
                 StudentVM view = JsonConvert.DeserializeObject<StudentVM>(student)!;
-                return View(view);
-            }
+
+                viewModel.StudentName = view.StudentName;
+                viewModel.EmailAddress = view.EmailAddress;
+                viewModel.PhoneNumber = view.PhoneNumber;
+                viewModel.SelectedParishId = view.SelectedParishId;
+                viewModel.SelectedProgramId = view.SelectedProgramId;
+                viewModel.SelectedSizeId = view.SelectedSizeId;
                 
+                return View(viewModel);
+            }
         }
 
 
