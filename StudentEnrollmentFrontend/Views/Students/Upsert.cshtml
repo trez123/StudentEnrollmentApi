@@ -1,0 +1,69 @@
+﻿@model StudentEnrollmentFrontend.Models.StudentVM
+
+@{
+    ViewData["Title"] = "Upsert";
+}
+
+<div class="row mt-4">
+    <div class="col-md-6 offset-md-3">
+        <h4 class="text-success">Product Creation</h4>
+        <hr />
+        <form asp-action="Upsert">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StudentName" class="control-label"></label>
+                <input asp-for="StudentName" class="form-control" />
+                <span asp-validation-for="StudentName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailAddress" class="control-label"></label>
+                <input asp-for="EmailAddress" class="form-control" />
+                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedSizeId" class="control-label"></label>
+                <select asp-for="SelectedParishId" class="form-control" asp-items="@Model.SizeList">
+                    <option disabled selected>-- Select An Item</option>
+                </select>
+                <span asp-validation-for="SelectedSizeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedParishId" class="control-label"></label>
+                <select asp-for="SelectedParishId" class="form-control" asp-items="@Model.ParishList">
+                    <option disabled selected>-- Select An Item</option>
+                </select>
+                <span asp-validation-for="SelectedSizeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedProgramId" class="control-label"></label>
+                <select asp-for="SelectedProgramId" class="form-control" asp-items="@Model.ProgramList">
+                    <option disabled selected>-- Select An Item</option>
+                </select>
+                <span asp-validation-for="SelectedProgramId" class="text-danger"></span>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="submit" value="Submit" class="btn btn-success w-100" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <a asp-action="Index" class="btn btn-secondary w-100">View All</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

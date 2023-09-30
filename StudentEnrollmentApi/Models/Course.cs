@@ -1,0 +1,12 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace StudentEnrollmentApi.Models
+{
+    public class Course
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public string? CourseName { get; set; }
+    }
+}
