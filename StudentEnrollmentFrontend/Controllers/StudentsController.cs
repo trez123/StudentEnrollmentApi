@@ -107,18 +107,53 @@ namespace StudentEnrollmentFrontend.Controllers
 
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = _clientHandler.CreateClient("ProductAPI").PostAsync("", data).Result;
+            if (student.Id == 0)
+            {
+                var response = _clientHandler.CreateClient("StudentAPI").PostAsync("", data).Result;
 
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Product creation failed");
+                    return View(studentvm);
+                }
+            }
+            else
+            {
+                var response = _clientHandler.CreateClient("StudentAPI").PutAsync($"{student.Id}", data).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Product creation failed");
+                    return View(studentvm);
+                }
+            }
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var httpClient = _clientHandler.CreateClient("StudentAPI");
+            var response = await httpClient.DeleteAsync($"{id}");
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Product creation failed");
-                return View(studentvm);
+                ModelState.AddModelError(string.Empty, "Student Delete failed");
+                return RedirectToAction("Index");
             }
         }
+
 
     }
 }

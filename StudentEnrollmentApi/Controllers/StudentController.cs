@@ -52,7 +52,7 @@ namespace StudentEnrollmentApi.Controllers
 
         [HttpPut("{id}")]
 
-        public IActionResult UpdateProduct(int id, [FromBody] Student student)
+        public IActionResult UpdateStudent(int id, [FromBody] Student student)
         {
             var content = _context.Students.FirstOrDefault(x => x.Id == id);
 
@@ -66,6 +66,24 @@ namespace StudentEnrollmentApi.Controllers
 
             return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteStudent(int id)
+        {
+            if (_context.Students == null)
+            {
+                return BadRequest("Entity set 'Students' is null.");
+            }
+            var student = await _context.Students.FindAsync(id);
+            if (student != null)
+            {
+                _context.Students.Remove(student);
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(student);
+        }
+
 
         [HttpGet]
         [Route("course")]
