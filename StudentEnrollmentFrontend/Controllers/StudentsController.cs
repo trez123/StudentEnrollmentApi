@@ -16,7 +16,7 @@ namespace StudentEnrollmentFrontend.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var httpClient = _clientHandler.CreateClient("ProductAPI");
+            var httpClient = _clientHandler.CreateClient("StudentAPI");
 
             var response = await httpClient.GetAsync("");
 
