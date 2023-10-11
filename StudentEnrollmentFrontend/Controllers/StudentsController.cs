@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using StudentEnrollmentFrontend.Models;
 using System.Text;
+using System.Net.Http.Headers;
 
 namespace StudentEnrollmentFrontend.Controllers
 {
     public class StudentsController : Controller
     {
+        const string API_URL = "https://localhost:7240/api/Student/";
         private readonly IHttpClientFactory _clientHandler;
         public StudentsController(IHttpClientFactory clientHandler)
         {
@@ -94,29 +96,77 @@ namespace StudentEnrollmentFrontend.Controllers
         }
 
 
+        //[HttpPost]
+
+        //public IActionResult Upsert(StudentVM studentvm)
+        //{
+        //    if (!ModelState.IsValid) return View(studentvm);
+
+        //    var student = new Student
+        //    {
+        //        StudentName = studentvm.StudentName,
+        //        EmailAddress = studentvm.EmailAddress,
+        //        PhoneNumber = studentvm.PhoneNumber,
+        //        ParishId = studentvm.SelectedParishId,
+        //        ProgramId = studentvm.SelectedProgramId,
+        //        SizeId = studentvm.SelectedSizeId,
+        //        //StudntIdImageFile = studentvm.StudntIdImageFile
+        //    };
+
+        //    var json = JsonConvert.SerializeObject(student);
+
+        //    var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+        //    if (student.Id == 0)
+        //    {
+        //        var response = _clientHandler.CreateClient("StudentAPI").PostAsync("", data).Result;
+
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            return RedirectToAction("Index");
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError(string.Empty, "Product creation failed");
+        //            return View(studentvm);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var response = _clientHandler.CreateClient("StudentAPI").PutAsync($"{student.Id}", data).Result;
+
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            return RedirectToAction("Index");
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError(string.Empty, "Product creation failed");
+        //            return View(studentvm);
+        //        }
+        //    }
+        //}
+
         [HttpPost]
 
-        public IActionResult Upsert(StudentVM studentvm)
+        public async Task<IActionResult> Upsert(StudentVM studentvm)
         {
             if (!ModelState.IsValid) return View(studentvm);
 
-            var student = new Student
+            var student = new StudentCreateDTO
             {
                 StudentName = studentvm.StudentName,
                 EmailAddress = studentvm.EmailAddress,
                 PhoneNumber = studentvm.PhoneNumber,
                 ParishId = studentvm.SelectedParishId,
                 ProgramId = studentvm.SelectedProgramId,
-                SizeId = studentvm.SelectedSizeId
+                SizeId = studentvm.SelectedSizeId,
+                StudntIdImageFile = studentvm.StudntIdImageFile
             };
 
-            var json = JsonConvert.SerializeObject(student);
-
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
-
-            if (student.Id == 0)
+            if (studentvm.Id == 0)
             {
-                var response = _clientHandler.CreateClient("StudentAPI").PostAsync("", data).Result;
+                var response = await SendStudentToApi(student);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -130,7 +180,7 @@ namespace StudentEnrollmentFrontend.Controllers
             }
             else
             {
-                var response = _clientHandler.CreateClient("StudentAPI").PutAsync($"{student.Id}", data).Result;
+                var response = await SendStudentToApi(student);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -140,6 +190,41 @@ namespace StudentEnrollmentFrontend.Controllers
                 {
                     ModelState.AddModelError(string.Empty, "Product creation failed");
                     return View(studentvm);
+                }
+            }
+        }
+
+        private async Task<HttpResponseMessage> SendStudentToApi(StudentCreateDTO studentCreateDTO)
+        {
+            using(var httpClient = new HttpClient())
+            {
+                using (var formData = new MultipartFormDataContent())
+                {
+                    formData.Headers.ContentType.MediaType = "multipart/form-data";
+
+                    formData.Add(new StringContent(studentCreateDTO.StudentName), "StudentName");
+                    formData.Add(new StringContent(studentCreateDTO.EmailAddress), "EmailAddress");
+                    formData.Add(new StringContent(studentCreateDTO.PhoneNumber), "PhoneNumber");
+                    formData.Add(new StringContent(studentCreateDTO.SizeId.ToString()), "SizeId");
+                    formData.Add(new StringContent(studentCreateDTO.ParishId.ToString()), "ParishId");
+                    formData.Add(new StringContent(studentCreateDTO.ProgramId.ToString()), "ProgramId");
+
+                    if(studentCreateDTO.StudntIdImageFile != null && studentCreateDTO.StudntIdImageFile.Length > 0)
+                    {
+                        formData.Add(new StreamContent(studentCreateDTO.StudntIdImageFile.OpenReadStream())
+                        {
+                            Headers = {
+                                ContentLength = studentCreateDTO.StudntIdImageFile.Length,
+                                ContentType = new MediaTypeHeaderValue(studentCreateDTO.StudntIdImageFile.ContentType)
+                            }
+                        }, "StudentImageFile", studentCreateDTO.StudntIdImageFile.FileName);
+                    }
+
+                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("Multipart/form-data"));
+
+                    //var response = _clientHandler.CreateClient("StudentAPI").PostAsync("FileUpload", formData).Result;
+
+                    return await httpClient.PostAsync(API_URL + "FileUpload", formData);
                 }
             }
         }

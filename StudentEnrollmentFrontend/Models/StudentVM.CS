@@ -15,6 +15,8 @@ namespace StudentEnrollmentFrontend.Models
 
         public string? PhoneNumber { get; set; }
 
+        public IFormFile? StudntIdImageFile { get; set; }
+
         public List<SelectListItem>? ParishList { get; set; }
 
         public List<SelectListItem>? ProgramList { get; set; }

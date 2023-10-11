@@ -3,11 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace StudentEnrollmentFrontend.Models
 {
-    public class Student
+    public class StudentCreateDTO
     {
-        [Key]
-        public int Id { get; set; }
-
         public string? StudentName { get; set; }
 
         public string? EmailAddress { get; set; }
@@ -20,9 +17,6 @@ namespace StudentEnrollmentFrontend.Models
 
         public int SizeId { get; set; }
 
-        public string? studentImageFilePath { get; set; } = string.Empty;
-        public virtual Parish? Parish { get; set; }
-        public virtual Course? Course { get; set; }
-        public virtual Size? Size { get; set; }
+        public IFormFile? StudntIdImageFile { get; set; }
     }
 }
