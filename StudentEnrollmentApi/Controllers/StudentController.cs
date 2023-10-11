@@ -50,6 +50,82 @@ namespace StudentEnrollmentApi.Controllers
             return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
         }
 
+        [HttpPost]
+        [Route("FileUpload")]
+        public async Task<IActionResult> CreateStudentWithFle([FromForm] StudentCreateDTO studentCreateDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var studentImageFile = studentCreateDTO.StudntIdImageFile;
+
+                if(studentImageFile != null && studentImageFile.Length > 0)
+                {
+                    var fileName = Guid.NewGuid() + "-" + studentImageFile.FileName;
+
+                    var apiFilePath = Path.Combine("api", "server", "uploads", fileName);
+
+                    using (var stream = new FileStream(apiFilePath, FileMode.Create))
+                    {
+                        await studentImageFile.CopyToAsync(stream);
+                    }
+
+                    Student student = new()
+                    {
+                        StudentName = studentCreateDTO.StudentName,
+                        EmailAddress = studentCreateDTO.EmailAddress,
+                        PhoneNumber = studentCreateDTO.PhoneNumber,
+                        ProgramId = studentCreateDTO.ProgramId,
+                        ParishId = studentCreateDTO.ParishId,
+                        SizeId = studentCreateDTO.SizeId,
+                        studentImageFilePath = apiFilePath != String.Empty ? apiFilePath : ""
+                    };
+
+                    _context.Students.Add(student);
+                    _context.SaveChanges();
+
+                    return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
+                }
+            }
+            
+            return BadRequest(ModelState);
+        }
+
+        [HttpGet("files/{filename}")]
+
+        public IActionResult GetFile(string filename)
+        {
+            string filePath = Path.Combine("api", "server", "uploads", filename);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound();
+            }
+
+            string contentType = GetContentType(filePath);
+
+            var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+            return new FileStreamResult(fileStream, contentType);
+        }
+
+        private string GetContentType(string filename)
+        {
+            string ext = Path.GetExtension(filename).ToLowerInvariant();
+
+            switch (ext)
+            {
+                case ".jpg":
+                case ".jpeg":
+                    return "image/jpeg";
+                case ".png":
+                    return "image/png";
+                case ".pdf":
+                    return "application/pdf";
+                default:
+                    return "application/octet-stream";
+            }
+        }
+
         [HttpPut("{id}")]
 
         public IActionResult UpdateStudent(int id, [FromBody] Student student)
