@@ -15,7 +15,7 @@ namespace StudentEnrollmentApi.Models
         public string? PhoneNumber { get; set; }
 
         [Column(TypeName = "varchar(500)")]
-        public string? studentImageFilePath { get; set; } = string.Empty;
+        public string? StudentImageFilePath { get; set; } = string.Empty;
 
         public int ParishId { get; set; }
 

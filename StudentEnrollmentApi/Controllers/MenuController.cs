@@ -8,20 +8,20 @@ namespace StudentEnrollmentApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StudentController : ControllerBase
+    public class MenuController : ControllerBase
     {
 
         private readonly StudentsDbContext _context;
 
-        public StudentController(StudentsDbContext context)
+        public MenuController(StudentsDbContext context)
         {
             this._context = context;
         }
 
         [HttpGet]
-        public IActionResult GetStudents()
+        public IActionResult GetMenu()
         {
-            var content = _context.Students.Include(b => b.Parish).Include(b => b.Size).Include(b => b.Course).ToList();
+            var content = _context.Menus.Include(b => b.MealType).ToList();
 
             if (content == null)
             {
@@ -31,9 +31,9 @@ namespace StudentEnrollmentApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetStudentById(int id)
+        public IActionResult GetMenuById(int id)
         {
-            var content = _context.Students.FirstOrDefault(b => b.Id == id);
+            var content = _context.Menus.FirstOrDefault(b => b.Id == id);
             if (content == null)
             {
                 return BadRequest();
@@ -42,21 +42,21 @@ namespace StudentEnrollmentApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateStudent([FromBody] Student student)
+        public IActionResult CreateMenu([FromBody] Menu menu)
         {
-            _context.Students.Add(student);
+            _context.Students.Add(menu);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
+            return CreatedAtAction(nameof(GetMenuById), new { id = menu.Id }, menu);
         }
 
         [HttpPost]
         [Route("FileUpload")]
-        public async Task<IActionResult> CreateStudentWithFile([FromForm] StudentCreateDTO studentCreateDTO)
+        public async Task<IActionResult> CreateMenuWithFile([FromForm] MenuCreateDTO menuCreateDTO)
         {
             if (ModelState.IsValid)
             {
-                var studentImageFile = studentCreateDTO.StudntIdImageFile;
+                var studentImageFile = menuCreateDTO.MenuIdImageFile;
 
                 if(studentImageFile != null && studentImageFile.Length > 0)
                 {
@@ -69,21 +69,20 @@ namespace StudentEnrollmentApi.Controllers
                         await studentImageFile.CopyToAsync(stream);
                     }
 
-                    Student student = new()
+                    Menu menu = new()
                     {
-                        StudentName = studentCreateDTO.StudentName,
-                        EmailAddress = studentCreateDTO.EmailAddress,
-                        PhoneNumber = studentCreateDTO.PhoneNumber,
-                        ProgramId = studentCreateDTO.ProgramId,
-                        ParishId = studentCreateDTO.ParishId,
-                        SizeId = studentCreateDTO.SizeId,
-                        StudentImageFilePath = apiFilePath != String.Empty ? apiFilePath : ""
+                        Starch = menuCreateDTO.Starch,
+                        Meat = menuCreateDTO.Meat,
+                        Beverage = menuCreateDTO.Beverage,
+                        Vegetable = menuCreateDTO.Vegetable,
+                        MealTypeId = menuCreateDTO.MealTypeId,
+                        MenuImageFilePath = apiFilePath != String.Empty ? apiFilePath : ""
                     };
 
-                    _context.Students.Add(student);
+                    _context.Students.Add(menu);
                     _context.SaveChanges();
 
-                    return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
+                    return CreatedAtAction(nameof(GetMenuById), new { id = menu.Id }, menu);
                 }
             }
             
@@ -128,7 +127,7 @@ namespace StudentEnrollmentApi.Controllers
 
         [HttpPut("{id}")]
 
-        public IActionResult UpdateStudent(int id, [FromBody] Student student)
+        public IActionResult UpdateMenu(int id, [FromBody] Menu menu)
         {
             var content = _context.Students.FirstOrDefault(x => x.Id == id);
 
@@ -137,63 +136,35 @@ namespace StudentEnrollmentApi.Controllers
                 return NotFound();
             }
 
-            _context.Students.Update(student);
+            _context.Students.Update(menu);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
+            return CreatedAtAction(nameof(GetMenuById), new { id = menu.Id }, menu);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteStudent(int id)
+        public async Task<ActionResult> DeleteMenu(int id)
         {
-            if (_context.Students == null)
+            if (_context.Menus == null)
             {
                 return BadRequest("Entity set 'Students' is null.");
             }
-            var student = await _context.Students.FindAsync(id);
-            if (student != null)
+            var menu = await _context.Students.FindAsync(id);
+            if (menu != null)
             {
-                _context.Students.Remove(student);
+                _context.Students.Remove(menu);
             }
 
             await _context.SaveChangesAsync();
-            return Ok(student);
+            return Ok(menu);
         }
 
 
         [HttpGet]
-        [Route("course")]
-        public IActionResult GetCourse()
+        [Route("mealType")]
+        public IActionResult GetMealType()
         {
-            var content = _context.Courses.ToList();
-
-            if (content == null)
-            {
-                return BadRequest();
-            }
-
-            return Ok(content);
-        }
-
-        [HttpGet]
-        [Route("parish")]
-        public IActionResult GetParish()
-        {
-            var content = _context.Parishes.ToList();
-
-            if (content == null)
-            {
-                return BadRequest();
-            }
-
-            return Ok(content);
-        }
-
-        [HttpGet]
-        [Route("size")]
-        public IActionResult GetSize()
-        {
-            var content = _context.Sizes.ToList();
+            var content = _context.MealTyes.ToList();
 
             if (content == null)
             {

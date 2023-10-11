@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudentEnrollmentApi.Models;
+using System.Collections.Generic;
 
 namespace StudentEnrollmentApi.Data
 {
@@ -13,5 +14,7 @@ namespace StudentEnrollmentApi.Data
         public DbSet<Size> Sizes { get; set; }
         public DbSet<Parish> Parishes { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<MealType> MealTyes { get; set; }
     }
 }

@@ -8,6 +8,11 @@ builder.Services.AddHttpClient("StudentAPI", client =>
     client.BaseAddress = new Uri("https://localhost:7240/api/Student/");
 });
 
+builder.Services.AddHttpClient("MenuAPI", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7240/api/Menu/");
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
