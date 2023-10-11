@@ -38,39 +38,17 @@ namespace StudentEnrollmentFrontend.Controllers
 
         public IActionResult Upsert(int id = 0)
         {
-            var CourseResponse = _clientHandler.CreateClient("StudentAPI").GetAsync("course").Result;
+            var mealTypeResponse = _clientHandler.CreateClient("MenuAPI").GetAsync("mealType").Result;
 
-            var ParishResponse = _clientHandler.CreateClient("StudentAPI").GetAsync("parish").Result;
+            var MealTypes = mealTypeResponse.Content.ReadAsStringAsync().Result;
 
-            var SizeResponse = _clientHandler.CreateClient("StudentAPI").GetAsync("size").Result;
+            List<MealType> MealTypeList = JsonConvert.DeserializeObject<List<MealType>>(MealTypes)!;
 
-            var Courses = CourseResponse.Content.ReadAsStringAsync().Result;
-
-            var Parishes = ParishResponse.Content.ReadAsStringAsync().Result;
-
-            var Sizes = SizeResponse.Content.ReadAsStringAsync().Result;
-
-            List<Course> CourseList = JsonConvert.DeserializeObject<List<Course>>(Courses)!;
-            List<Parish> ParishList = JsonConvert.DeserializeObject<List<Parish>>(Parishes)!;
-            List<Size> SizeList = JsonConvert.DeserializeObject<List<Size>>(Sizes)!;
-
-            StudentVM viewModel = new()
+            MenuVM viewModel = new()
             {
-                ProgramList = CourseList.Select(data => new SelectListItem
+                MealTypeList = MealTypeList.Select(data => new SelectListItem
                 {
-                    Text = data.CourseName,
-                    Value = data.Id.ToString()
-                }).ToList(),
-
-                ParishList = ParishList.Select(data => new SelectListItem
-                {
-                    Text = data.ParishName,
-                    Value = data.Id.ToString()
-                }).ToList(),
-
-                SizeList = SizeList.Select(data => new SelectListItem
-                {
-                    Text = data.SizeName,
+                    Text = data.MealTypeName,
                     Value = data.Id.ToString()
                 }).ToList()
             };
@@ -79,17 +57,16 @@ namespace StudentEnrollmentFrontend.Controllers
                 return View(viewModel);
             else
             {
-                var studentResponse = _clientHandler.CreateClient("StudentAPI").GetAsync($"{id}").Result;
-                var student = studentResponse.Content.ReadAsStringAsync().Result;
+                var MenuResponse = _clientHandler.CreateClient("StudentAPI").GetAsync($"{id}").Result;
+                var Menu = MenuResponse.Content.ReadAsStringAsync().Result;
 
-                StudentVM view = JsonConvert.DeserializeObject<StudentVM>(student)!;
+                MenuVM view = JsonConvert.DeserializeObject<MenuVM>(Menu)!;
 
-                viewModel.StudentName = view.StudentName;
-                viewModel.EmailAddress = view.EmailAddress;
-                viewModel.PhoneNumber = view.PhoneNumber;
-                viewModel.SelectedParishId = view.SelectedParishId;
-                viewModel.SelectedProgramId = view.SelectedProgramId;
-                viewModel.SelectedSizeId = view.SelectedSizeId;
+                viewModel.Starch = view.Starch;
+                viewModel.Beverage = view.Beverage;
+                viewModel.Meat = view.Meat;
+                viewModel.Vegetable = view.Vegetable;
+                viewModel.MealTypeId = view.MealTypeId;
                 
                 return View(viewModel);
             }
@@ -149,11 +126,11 @@ namespace StudentEnrollmentFrontend.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> Upsert(StudentVM studentvm)
+        public async Task<IActionResult> Upsert(MenuVM menuvm)
         {
-            if (!ModelState.IsValid) return View(studentvm);
+            if (!ModelState.IsValid) return View(menuvm);
 
-            var student = new StudentCreateDTO
+            MenuCreateDTO student = new()
             {
                 StudentName = studentvm.StudentName,
                 EmailAddress = studentvm.EmailAddress,
