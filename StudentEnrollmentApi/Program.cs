@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<StudentsDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("APiConnection")));
+builder.Services.AddDbContext<StudentsDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("LinuxApiConnection")));
 
 var app = builder.Build();
 

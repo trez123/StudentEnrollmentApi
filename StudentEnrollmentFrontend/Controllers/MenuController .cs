@@ -130,20 +130,19 @@ namespace StudentEnrollmentFrontend.Controllers
         {
             if (!ModelState.IsValid) return View(menuvm);
 
-            MenuCreateDTO student = new()
+            MenuCreateDTO menu = new()
             {
-                StudentName = studentvm.StudentName,
-                EmailAddress = studentvm.EmailAddress,
-                PhoneNumber = studentvm.PhoneNumber,
-                ParishId = studentvm.SelectedParishId,
-                ProgramId = studentvm.SelectedProgramId,
-                SizeId = studentvm.SelectedSizeId,
-                StudntIdImageFile = studentvm.StudntIdImageFile
+                Starch = menuvm.Starch,
+                Beverage = menuvm.Beverage,
+                Meat = menuvm.Meat,
+                Vegetable = menuvm.Vegetable,
+                MealTypeId = menuvm.MealTypeId,
+                MenuIdImageFile = menuvm.MenuIdImageFile,
             };
 
-            if (studentvm.Id == 0)
+            if (menuvm.Id == 0)
             {
-                var response = await SendStudentToApi(student);
+                var response = await SendStudentToApi(menu);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -152,12 +151,12 @@ namespace StudentEnrollmentFrontend.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Product creation failed");
-                    return View(studentvm);
+                    return View(menuvm);
                 }
             }
             else
             {
-                var response = await SendStudentToApi(student);
+                var response = await SendStudentToApi(menu);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -166,12 +165,12 @@ namespace StudentEnrollmentFrontend.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Product creation failed");
-                    return View(studentvm);
+                    return View(menuvm);
                 }
             }
         }
 
-        private async Task<HttpResponseMessage> SendStudentToApi(StudentCreateDTO studentCreateDTO)
+        private async Task<HttpResponseMessage> SendStudentToApi(MenuCreateDTO menuCreateDTO)
         {
             using(var httpClient = new HttpClient())
             {
@@ -179,22 +178,21 @@ namespace StudentEnrollmentFrontend.Controllers
                 {
                     formData.Headers.ContentType.MediaType = "multipart/form-data";
 
-                    formData.Add(new StringContent(studentCreateDTO.StudentName), "StudentName");
-                    formData.Add(new StringContent(studentCreateDTO.EmailAddress), "EmailAddress");
-                    formData.Add(new StringContent(studentCreateDTO.PhoneNumber), "PhoneNumber");
-                    formData.Add(new StringContent(studentCreateDTO.SizeId.ToString()), "SizeId");
-                    formData.Add(new StringContent(studentCreateDTO.ParishId.ToString()), "ParishId");
-                    formData.Add(new StringContent(studentCreateDTO.ProgramId.ToString()), "ProgramId");
+                    formData.Add(new StringContent(menuCreateDTO.Starch), "Starch");
+                    formData.Add(new StringContent(menuCreateDTO.Beverage), "Beverage");
+                    formData.Add(new StringContent(menuCreateDTO.Meat), "Meat");
+                    formData.Add(new StringContent(menuCreateDTO.Vegetable), "Vegetable");
+                    formData.Add(new StringContent(menuCreateDTO.MealTypeId.ToString()), "MealTypeId");
 
-                    if(studentCreateDTO.StudntIdImageFile != null && studentCreateDTO.StudntIdImageFile.Length > 0)
+                    if(menuCreateDTO.MenuIdImageFile != null && menuCreateDTO.MenuIdImageFile.Length > 0)
                     {
-                        formData.Add(new StreamContent(studentCreateDTO.StudntIdImageFile.OpenReadStream())
+                        formData.Add(new StreamContent(menuCreateDTO.MenuIdImageFile.OpenReadStream())
                         {
                             Headers = {
-                                ContentLength = studentCreateDTO.StudntIdImageFile.Length,
-                                ContentType = new MediaTypeHeaderValue(studentCreateDTO.StudntIdImageFile.ContentType)
+                                ContentLength = menuCreateDTO.MenuIdImageFile.Length,
+                                ContentType = new MediaTypeHeaderValue(menuCreateDTO.MenuIdImageFile.ContentType)
                             }
-                        }, "StudentImageFile", studentCreateDTO.StudntIdImageFile.FileName);
+                        }, "MenuImageFile", menuCreateDTO.MenuIdImageFile.FileName);
                     }
 
                     httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("Multipart/form-data"));

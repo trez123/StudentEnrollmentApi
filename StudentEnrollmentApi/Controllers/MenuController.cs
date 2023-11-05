@@ -44,7 +44,7 @@ namespace StudentEnrollmentApi.Controllers
         [HttpPost]
         public IActionResult CreateMenu([FromBody] Menu menu)
         {
-            _context.Students.Add(menu);
+            _context.Menus.Add(menu);
             _context.SaveChanges();
 
             return CreatedAtAction(nameof(GetMenuById), new { id = menu.Id }, menu);
@@ -79,7 +79,7 @@ namespace StudentEnrollmentApi.Controllers
                         MenuImageFilePath = apiFilePath != String.Empty ? apiFilePath : ""
                     };
 
-                    _context.Students.Add(menu);
+                    _context.Menus.Add(menu);
                     _context.SaveChanges();
 
                     return CreatedAtAction(nameof(GetMenuById), new { id = menu.Id }, menu);
@@ -129,14 +129,14 @@ namespace StudentEnrollmentApi.Controllers
 
         public IActionResult UpdateMenu(int id, [FromBody] Menu menu)
         {
-            var content = _context.Students.FirstOrDefault(x => x.Id == id);
+            var content = _context.Menus.FirstOrDefault(x => x.Id == id);
 
             if (content == null)
             {
                 return NotFound();
             }
 
-            _context.Students.Update(menu);
+            _context.Menus.Update(menu);
             _context.SaveChanges();
 
             return CreatedAtAction(nameof(GetMenuById), new { id = menu.Id }, menu);
@@ -147,12 +147,12 @@ namespace StudentEnrollmentApi.Controllers
         {
             if (_context.Menus == null)
             {
-                return BadRequest("Entity set 'Students' is null.");
+                return BadRequest("Entity set 'Menus' is null.");
             }
-            var menu = await _context.Students.FindAsync(id);
+            var menu = await _context.Menus.FindAsync(id);
             if (menu != null)
             {
-                _context.Students.Remove(menu);
+                _context.Menus.Remove(menu);
             }
 
             await _context.SaveChangesAsync();
