@@ -5,12 +5,12 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient("StudentAPI", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7240/api/Student/");
+    client.BaseAddress = new Uri("http://localhost:7240/api/Student");
 });
 
 builder.Services.AddHttpClient("MenuAPI", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7240/api/Menu/");
+    client.BaseAddress = new Uri("http://localhost:7240/api/Menu/");
 });
 
 var app = builder.Build();

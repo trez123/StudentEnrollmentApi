@@ -22,17 +22,23 @@ namespace StudentEnrollmentFrontend.Controllers
 
             var response = await httpClient.GetAsync("");
 
+            List<Student> productList = new();
+
+            if(response != null){
+
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
 
-                var productList = JsonConvert.DeserializeObject<List<Student>>(content);
-
-                return View(productList);
+                productList = JsonConvert.DeserializeObject<List<Student>>(content)!;
             }
-
             else
                 return Problem("Error in Api response");
+
+            return View(productList);
+            }
+            else 
+                return View(productList);
         }
 
 

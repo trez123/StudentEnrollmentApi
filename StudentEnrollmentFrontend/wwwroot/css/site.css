@@ -15,4 +15,27 @@ html {
 
 body {
   margin-bottom: 60px;
+  font-family: 'Kodchasan';
+}
+
+.wrap {
+  display: inline-block;
+  position: relative;
+}
+
+.wrap img + .content {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.title{
+  font-size: 8rem;
+  font-family: 'Irish Grover';
+  color: white;
+
+}
+
+.background-image-cover{
+  background-color: rgba(0, 0, 0, 0.4);
 }
