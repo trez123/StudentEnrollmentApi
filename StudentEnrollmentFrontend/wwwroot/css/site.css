@@ -39,3 +39,13 @@ body {
 .background-image-cover{
   background-color: rgba(0, 0, 0, 0.4);
 }
+
+.tab {
+  display: inline-block;
+  margin-left: 1em;
+}
+
+hr.rounded {
+  border-top: 2px solid;
+  border-radius: 2px;
+}

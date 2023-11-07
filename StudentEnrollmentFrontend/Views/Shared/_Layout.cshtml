@@ -20,25 +20,25 @@
     </div>
     <header style="position: absolute; z-index: 999; width:100%">
         <nav class="navbar navbar-expand-lg navbar-toggleable-sm navbar-light bg-transparent w-100">
-            <div class="d-flex justify-content-center w-100">
-                <a class="navbar-brand fs-2 text-light" asp-area="" asp-controller="Home" asp-action="Index" style="font-family: 'Irish Grover';"><img src="/images/logo.svg"></img>Timothy Shalamat School</a>
+            <div class="d-flex justify-content-between w-100 px-5">
+                <a class="navbar-brand fs-2 text-light" asp-area="" asp-controller="Home" asp-action="Index" style="font-family: 'Irish Grover';"><img src="/images/logo.svg"><span class="tab"></span>Timothy Shalamat School</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="d-sm-inline-flex justify-content-between align-items-center">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">WHY US?</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">WHY US?</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">ABOUT US</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">ABOUT US</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">CONTACT US</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">CONTACT US</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">PROGRAMS</a>
+                            <a class="nav-link text-light pr-4" style="margin-right: 2rem;" asp-area="" asp-controller="Home" asp-action="Privacy">PROGRAMS</a>
                         </li>
                         <li class="nav-item">
                             <a class="btn btn-light" style="color: #F68836; border-radius: 999px;" asp-area="" asp-controller="Home" asp-action="Privacy">ENROLL NOW</a>
@@ -53,11 +53,52 @@
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
+    <div class="d-flex flex-column align-items-center p-5" style="background-color: #FFE0B1; color: rgba(0, 0, 0, 0.6);">
         <div class="container">
-            &copy; 2023 - StudentEnrollmentFrontend - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row">
+                <div class="col d-flex flex-column align-items-center">
+                    <h2 ><strong>FIND US ONLINE</strong></h2>
+                    <div class="d-flex w-50 justify-content-between mt-3" style="font-size: 2rem;">
+                        <i class="fa-brands fa-linkedin-in"></i>
+                        <i class="fa-brands fa-instagram"></i>
+                        <i class="fa-brands fa-facebook"></i>
+                        <i class="fa-brands fa-twitter"></i>
+                    </div>
+                    <h2 class="mt-4"><strong>CONTACT US</strong></h2>
+                    <p class="text-center fs-4 mt-3">info@sanderlingwaldorf.org<br>760-635-3747</p>
+                </div>
+                <div class="col d-flex flex-column align-items-center">
+                    <h2 ><strong>LOCATIONS</strong></h2>
+                    <p class="text-center fs-4">GRADES 1-13 CAMPUS 2585 Business Park Drive Vista, Kingston 10</p>
+                    <hr class="rounded w-100">
+                    <p class="text-center fs-5">privacy policy</p>
+                    <p class="text-center fs-5">COVID-19 Policy and Procedures</p>
+                </div>
+                <div class="col d-flex flex-column align-items-center">
+                    <h2 ><strong>WHY TIMOTHY?</strong></h2>
+                    <img src="/images/jta.svg">
+                    <img src="/images/MIS.svg">
+                </div>
+            </div>
         </div>
+    </div>
+    <footer class="border-top footer text-muted" style="background-color: #ED6468">
+       <div class="container">
+         <div class="row">
+            <ul class="nav col">
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-light">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-light">Contact</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-light">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-light">About</a></li>
+            </ul>
+        <div class="col d-flex align-items-center justify-content-end" style="font-size: 1.5rem;">
+            <i class="fa-brands fa-linkedin-in px-2 text-light"></i>
+            <i class="fa-brands fa-instagram px-2 text-light"></i>
+            <i class="fa-brands fa-facebook px-2 text-light"></i>
+            <i class="fa-brands fa-twitter px-2 text-light"></i>
+        </div>
+         </div>
+       </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
