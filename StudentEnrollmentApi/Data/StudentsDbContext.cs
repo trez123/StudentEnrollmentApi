@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using StudentEnrollmentApi.Models;
 using System.Collections.Generic;
 
 namespace StudentEnrollmentApi.Data
 {
-    public class StudentsDbContext: DbContext
+    public class StudentsDbContext: IdentityDbContext
     {
         public StudentsDbContext(DbContextOptions<StudentsDbContext> options) : base(options)
         {
