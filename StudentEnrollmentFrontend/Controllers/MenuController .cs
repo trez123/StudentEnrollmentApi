@@ -10,6 +10,7 @@ namespace StudentEnrollmentFrontend.Controllers
     public class MenuController : Controller
     {
         const string API_URL = "https://localhost:7240/api/Menu/";
+        const string SESSION_AUTH = "Student";
         private readonly IHttpClientFactory _clientHandler;
         public MenuController(IHttpClientFactory clientHandler)
         {
@@ -18,15 +19,20 @@ namespace StudentEnrollmentFrontend.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var httpClient = _clientHandler.CreateClient("MenuAPI");
+            ViewBag.TextColor = "black";
+            ViewBag.ButtonColor = "#ED6468";
+            string token = HttpContext.Session.GetString(SESSION_AUTH)!;
+            if(string.IsNullOrEmpty(token)) return RedirectToAction("Login","Auth");
+            HttpClient studentClient = _clientHandler.CreateClient("MenuAPI");
+            studentClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await httpClient.GetAsync("");
+            var response = await studentClient.GetAsync("");
 
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
 
-                var productList = JsonConvert.DeserializeObject<List<Student>>(content);
+                var productList = JsonConvert.DeserializeObject<List<Menu>>(content);
 
                 return View(productList);
             }
@@ -38,6 +44,8 @@ namespace StudentEnrollmentFrontend.Controllers
 
         public IActionResult Upsert(int id = 0)
         {
+            ViewBag.TextColor = "black";
+            ViewBag.ButtonColor = "#ED6468";
             var mealTypeResponse = _clientHandler.CreateClient("MenuAPI").GetAsync("mealType").Result;
 
             var MealTypes = mealTypeResponse.Content.ReadAsStringAsync().Result;
@@ -66,7 +74,7 @@ namespace StudentEnrollmentFrontend.Controllers
                 viewModel.Beverage = view.Beverage;
                 viewModel.Meat = view.Meat;
                 viewModel.Vegetable = view.Vegetable;
-                viewModel.MealTypeId = view.MealTypeId;
+                viewModel.SelectedMealTypeId = view.SelectedMealTypeId;
                 
                 return View(viewModel);
             }
@@ -136,7 +144,7 @@ namespace StudentEnrollmentFrontend.Controllers
                 Beverage = menuvm.Beverage,
                 Meat = menuvm.Meat,
                 Vegetable = menuvm.Vegetable,
-                MealTypeId = menuvm.MealTypeId,
+                MealTypeId = menuvm.SelectedMealTypeId,
                 MenuIdImageFile = menuvm.MenuIdImageFile,
             };
 
@@ -170,46 +178,46 @@ namespace StudentEnrollmentFrontend.Controllers
             }
         }
 
-        private async Task<HttpResponseMessage> SendStudentToApi(MenuCreateDTO menuCreateDTO)
+        private static async Task<HttpResponseMessage> SendStudentToApi(MenuCreateDTO menuCreateDTO)
         {
-            using(var httpClient = new HttpClient())
+            using var httpClient = new HttpClient();
+            using var formData = new MultipartFormDataContent();
+            formData.Headers.ContentType!.MediaType = "multipart/form-data";
+
+            formData.Add(new StringContent(menuCreateDTO.Starch!), "Starch");
+            formData.Add(new StringContent(menuCreateDTO.Beverage!), "Beverage");
+            formData.Add(new StringContent(menuCreateDTO.Meat!), "Meat");
+            formData.Add(new StringContent(menuCreateDTO.Vegetable!), "Vegetable");
+            formData.Add(new StringContent(menuCreateDTO.MealTypeId.ToString()), "MealTypeId");
+
+            if (menuCreateDTO.MenuIdImageFile != null && menuCreateDTO.MenuIdImageFile.Length > 0)
             {
-                using (var formData = new MultipartFormDataContent())
+                formData.Add(new StreamContent(menuCreateDTO.MenuIdImageFile.OpenReadStream())
                 {
-                    formData.Headers.ContentType.MediaType = "multipart/form-data";
-
-                    formData.Add(new StringContent(menuCreateDTO.Starch), "Starch");
-                    formData.Add(new StringContent(menuCreateDTO.Beverage), "Beverage");
-                    formData.Add(new StringContent(menuCreateDTO.Meat), "Meat");
-                    formData.Add(new StringContent(menuCreateDTO.Vegetable), "Vegetable");
-                    formData.Add(new StringContent(menuCreateDTO.MealTypeId.ToString()), "MealTypeId");
-
-                    if(menuCreateDTO.MenuIdImageFile != null && menuCreateDTO.MenuIdImageFile.Length > 0)
-                    {
-                        formData.Add(new StreamContent(menuCreateDTO.MenuIdImageFile.OpenReadStream())
-                        {
-                            Headers = {
+                    Headers = {
                                 ContentLength = menuCreateDTO.MenuIdImageFile.Length,
                                 ContentType = new MediaTypeHeaderValue(menuCreateDTO.MenuIdImageFile.ContentType)
                             }
-                        }, "MenuImageFile", menuCreateDTO.MenuIdImageFile.FileName);
-                    }
-
-                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("Multipart/form-data"));
-
-                    //var response = _clientHandler.CreateClient("StudentAPI").PostAsync("FileUpload", formData).Result;
-
-                    return await httpClient.PostAsync(API_URL + "FileUpload", formData);
-                }
+                }, "MenuImageFile", menuCreateDTO.MenuIdImageFile.FileName);
             }
+
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("Multipart/form-data"));
+
+            //var response = _clientHandler.CreateClient("StudentAPI").PostAsync("FileUpload", formData).Result;
+
+            return await httpClient.PostAsync(API_URL + "FileUpload", formData);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var httpClient = _clientHandler.CreateClient("StudentAPI");
-            var response = await httpClient.DeleteAsync($"{id}");
+            string token = HttpContext.Session.GetString(SESSION_AUTH)!;
+            if(string.IsNullOrEmpty(token)) return RedirectToAction("Login","Auth");
+            HttpClient studentClient = _clientHandler.CreateClient("StudentAPI");
+            studentClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await studentClient.DeleteAsync($"{id}");
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

@@ -1,32 +1,32 @@
-﻿@model IEnumerable<StudentEnrollmentFrontend.Models.Student>
+﻿@model IEnumerable<StudentEnrollmentFrontend.Models.Menu>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<div class="row mt-4 pt-5 min-vh-100">
+<div class="row mt-5 pt-5 min-vh-100">
     <div class="col-sm-8 offset-md-2">
-        <h1 style="color: #ED6468;">Student Dashboard</h1>
+        <h1 style="color: #ED6468;">Menu Dashboard</h1>
         <table class="table">
             <thead>
                 <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.StudentName)
+                        @Html.DisplayNameFor(model => model.Starch)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.EmailAddress)
+                        @Html.DisplayNameFor(model => model.Beverage)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.PhoneNumber)
+                        @Html.DisplayNameFor(model => model.Meat)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Course!.CourseName)
+                        @Html.DisplayNameFor(model => model.Vegetable)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Parish!.ParishName)
+                        @Html.DisplayNameFor(model => model.MealType!.MealTypeName)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Size!.SizeName)
+                        @Html.DisplayNameFor(model => model.MenuImageFilePath)
                     </th>
                     <th>
                         <a asp-action="Upsert" class="btn btn-sm btn-success"> <i class="fa-solid fa-plus"></i> New</a>
@@ -38,22 +38,22 @@
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.StudentName)
+                            @Html.DisplayFor(modelItem => item.Starch)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.EmailAddress)
+                            @Html.DisplayFor(modelItem => item.Beverage)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            @Html.DisplayFor(modelItem => item.Meat)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Course!.CourseName)
+                            @Html.DisplayFor(modelItem => item.Vegetable)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Parish!.ParishName)
+                            @Html.DisplayFor(modelItem => item.MealType!.MealTypeName)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Size!.SizeName)
+                            @Html.DisplayFor(modelItem => item.MenuImageFilePath)
                         </td>
                         <td>
                             <form asp-action="Delete" asp-route-id="@item.Id">

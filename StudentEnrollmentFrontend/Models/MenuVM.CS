@@ -17,8 +17,8 @@ namespace StudentEnrollmentFrontend.Models
 
         public string? Vegetable { get; set; }
 
-        public int MealTypeId { get; set; }
 
+        [Display(Name = "Menu Image")]
         public IFormFile? MenuIdImageFile { get; set; }
 
         public List<SelectListItem>? MealTypeList { get; set; }

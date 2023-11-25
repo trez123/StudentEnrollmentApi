@@ -20,12 +20,16 @@ namespace StudentEnrollmentFrontend.Controllers
 
         public IActionResult Privacy()
         {
+            ViewBag.TextColor = "black";
+            ViewBag.ButtonColor = "#ED6468";
             return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            ViewBag.TextColor = "black";
+            ViewBag.ButtonColor = "#ED6468";
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }

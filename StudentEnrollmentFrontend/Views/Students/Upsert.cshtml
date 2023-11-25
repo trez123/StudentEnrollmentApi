@@ -4,9 +4,9 @@
     ViewData["Title"] = "Upsert";
 }
 
-<div class="row mt-4">
+<div class="row mt-5 pt-5 min-vh-100">
     <div class="col-md-6 offset-md-3">
-        <h4 class="text-success">Product Creation</h4>
+        <h4 style="color: #ED6468;">Student Enrolment</h4>
         <hr />
         <form asp-action="Upsert">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -45,6 +45,11 @@
                     <option disabled selected>-- Select An Item</option>
                 </select>
                 <span asp-validation-for="SelectedProgramId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudntIdImageFile" class="control-label"></label>
+                <input type="file" multiple name="files" id="StudntIdImageFile" class="form-control" />
+                <span asp-validation-for="StudntIdImageFile" class="text-danger"></span>
             </div>
             <div class="row mt-2">
                 <div class="col-md-6">

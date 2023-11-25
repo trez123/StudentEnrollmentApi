@@ -22,6 +22,7 @@ namespace StudentEnrollmentFrontend.Models
         public virtual MealType? MealType { get; set; }
 
         [Column(TypeName = "varchar(500)")]
+        [Display (Name = "Meal Image")]
         public string? MenuImageFilePath { get; set; } = string.Empty;
     }
 }

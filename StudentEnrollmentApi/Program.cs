@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using StudentEnrollmentApi.Data;
 using StudentEnrollmentApi.Services;
 using StudentEnrollmentApi.Utilities;
-using WukkamanCleaningAgencyApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

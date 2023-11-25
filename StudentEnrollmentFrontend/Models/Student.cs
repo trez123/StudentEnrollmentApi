@@ -8,10 +8,13 @@ namespace StudentEnrollmentFrontend.Models
         [Key]
         public int Id { get; set; }
 
+        [Display (Name ="Student Name")]
         public string? StudentName { get; set; }
 
+        [Display (Name ="Email Address")]
         public string? EmailAddress { get; set; }
-
+        
+        [Display (Name ="Phone Number")]
         public string? PhoneNumber { get; set; }
 
         public int ParishId { get; set; }

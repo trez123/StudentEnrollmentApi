@@ -49,3 +49,7 @@ hr.rounded {
   border-top: 2px solid;
   border-radius: 2px;
 }
+
+.inverted-color{
+  color: black !important;
+}

@@ -1,0 +1,65 @@
+﻿@model StudentEnrollmentFrontend.Models.MenuVM
+
+@{
+    ViewData["Title"] = "Upsert";
+}
+
+<div class="row mt-5 pt-5 min-vh-100">
+    <div class="col-md-6 offset-md-3">
+        <h4 style="color: #ED6468;">Meal Creation</h4>
+        <hr />
+        <form asp-action="Upsert">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Starch" class="control-label"></label>
+                <input asp-for="Starch" class="form-control" />
+                <span asp-validation-for="Starch" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Beverage" class="control-label"></label>
+                <input asp-for="Beverage" class="form-control" />
+                <span asp-validation-for="Beverage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Meat" class="control-label"></label>
+                <input asp-for="Meat" class="form-control" />
+                <span asp-validation-for="Meat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Vegetable" class="control-label"></label>
+                <input asp-for="Vegetable" class="form-control" />
+                <span asp-validation-for="Vegetable" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedMealTypeId" class="control-label"></label>
+                <select asp-for="SelectedMealTypeId" class="form-control" asp-items="@Model.MealTypeList">
+                    <option disabled selected>-- Select An Item</option>
+                </select>
+                <span asp-validation-for="SelectedMealTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MenuIdImageFile" class="control-label"></label>
+                <input type="file" multiple name="files" id="MenuIdImageFile" class="form-control" />
+                <span asp-validation-for="MenuIdImageFile" class="text-danger"></span>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="submit" value="Submit" class="btn btn-success w-100" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <a asp-action="Index" class="btn btn-secondary w-100">View All</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

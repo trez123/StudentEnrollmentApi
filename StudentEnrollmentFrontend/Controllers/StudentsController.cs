@@ -9,7 +9,7 @@ namespace StudentEnrollmentFrontend.Controllers
 {
     public class StudentsController : Controller
     {
-        const string API_URL = "https://localhost:7240/api/Student/";
+        const string SESSION_AUTH = "Student";
         private readonly IHttpClientFactory _clientHandler;
         public StudentsController(IHttpClientFactory clientHandler)
         {
@@ -18,9 +18,14 @@ namespace StudentEnrollmentFrontend.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var httpClient = _clientHandler.CreateClient("StudentAPI");
+            ViewBag.TextColor = "black";
+            ViewBag.ButtonColor = "#ED6468";
+            string token = HttpContext.Session.GetString(SESSION_AUTH)!;
+            if(string.IsNullOrEmpty(token)) return RedirectToAction("Index","Login");
+            HttpClient studentClient = _clientHandler.CreateClient("StudentAPI");
+            studentClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await httpClient.GetAsync("");
+            var response = await studentClient.GetAsync("");
 
             List<Student> productList = new();
 
@@ -42,19 +47,24 @@ namespace StudentEnrollmentFrontend.Controllers
         }
 
 
-        public IActionResult Upsert(int id = 0)
+        public async Task<IActionResult> Upsert(int id = 0)
         {
-            var CourseResponse = _clientHandler.CreateClient("StudentAPI").GetAsync("course").Result;
+            ViewBag.TextColor = "black";
+            ViewBag.ButtonColor = "#ED6468";
 
-            var ParishResponse = _clientHandler.CreateClient("StudentAPI").GetAsync("parish").Result;
+            HttpClient client = _clientHandler.CreateClient("StudentAPI");
 
-            var SizeResponse = _clientHandler.CreateClient("StudentAPI").GetAsync("size").Result;
+            HttpResponseMessage CourseResponse = await client.GetAsync("course");
 
-            var Courses = CourseResponse.Content.ReadAsStringAsync().Result;
+            HttpResponseMessage ParishResponse = await client.GetAsync("parish");
 
-            var Parishes = ParishResponse.Content.ReadAsStringAsync().Result;
+            HttpResponseMessage SizeResponse = await client.GetAsync("size");
 
-            var Sizes = SizeResponse.Content.ReadAsStringAsync().Result;
+            string Courses = await CourseResponse.Content.ReadAsStringAsync();
+
+            string Parishes = await ParishResponse.Content.ReadAsStringAsync();
+
+            string Sizes = await SizeResponse.Content.ReadAsStringAsync();
 
             List<Course> CourseList = JsonConvert.DeserializeObject<List<Course>>(Courses)!;
             List<Parish> ParishList = JsonConvert.DeserializeObject<List<Parish>>(Parishes)!;
@@ -67,20 +77,17 @@ namespace StudentEnrollmentFrontend.Controllers
                     Text = data.CourseName,
                     Value = data.Id.ToString()
                 }).ToList(),
-
                 ParishList = ParishList.Select(data => new SelectListItem
                 {
                     Text = data.ParishName,
                     Value = data.Id.ToString()
                 }).ToList(),
-
                 SizeList = SizeList.Select(data => new SelectListItem
                 {
                     Text = data.SizeName,
                     Value = data.Id.ToString()
                 }).ToList()
             };
-
             if(id == 0)
                 return View(viewModel);
             else
@@ -194,45 +201,39 @@ namespace StudentEnrollmentFrontend.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Product creation failed");
+                    ModelState.AddModelError(string.Empty, "Product edit failed");
                     return View(studentvm);
                 }
             }
         }
 
-        private async Task<HttpResponseMessage> SendStudentToApi(StudentCreateDTO studentCreateDTO)
+        private  async Task<HttpResponseMessage> SendStudentToApi(StudentCreateDTO studentCreateDTO)
         {
-            using(var httpClient = new HttpClient())
+            HttpClient client = _clientHandler.CreateClient("StudentAPI");
+            MultipartFormDataContent formData = new();
+
+            formData.Headers.ContentType!.MediaType = "multipart/form-data";
+            formData.Add(new StringContent(studentCreateDTO.StudentName!), "StudentName");
+            formData.Add(new StringContent(studentCreateDTO.EmailAddress!), "EmailAddress");
+            formData.Add(new StringContent(studentCreateDTO.PhoneNumber!), "PhoneNumber");
+            formData.Add(new StringContent(studentCreateDTO.SizeId.ToString()), "SizeId");
+            formData.Add(new StringContent(studentCreateDTO.ParishId.ToString()), "ParishId");
+            formData.Add(new StringContent(studentCreateDTO.ProgramId.ToString()), "ProgramId");
+
+            if (studentCreateDTO.StudntIdImageFile != null && studentCreateDTO.StudntIdImageFile.Length > 0)
             {
-                using (var formData = new MultipartFormDataContent())
+                formData.Add(new StreamContent(studentCreateDTO.StudntIdImageFile.OpenReadStream())
                 {
-                    formData.Headers.ContentType.MediaType = "multipart/form-data";
-
-                    formData.Add(new StringContent(studentCreateDTO.StudentName), "StudentName");
-                    formData.Add(new StringContent(studentCreateDTO.EmailAddress), "EmailAddress");
-                    formData.Add(new StringContent(studentCreateDTO.PhoneNumber), "PhoneNumber");
-                    formData.Add(new StringContent(studentCreateDTO.SizeId.ToString()), "SizeId");
-                    formData.Add(new StringContent(studentCreateDTO.ParishId.ToString()), "ParishId");
-                    formData.Add(new StringContent(studentCreateDTO.ProgramId.ToString()), "ProgramId");
-
-                    if(studentCreateDTO.StudntIdImageFile != null && studentCreateDTO.StudntIdImageFile.Length > 0)
-                    {
-                        formData.Add(new StreamContent(studentCreateDTO.StudntIdImageFile.OpenReadStream())
-                        {
-                            Headers = {
+                    Headers = {
                                 ContentLength = studentCreateDTO.StudntIdImageFile.Length,
                                 ContentType = new MediaTypeHeaderValue(studentCreateDTO.StudntIdImageFile.ContentType)
                             }
-                        }, "StudentImageFile", studentCreateDTO.StudntIdImageFile.FileName);
-                    }
-
-                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("Multipart/form-data"));
-
-                    //var response = _clientHandler.CreateClient("StudentAPI").PostAsync("FileUpload", formData).Result;
-
-                    return await httpClient.PostAsync(API_URL + "FileUpload", formData);
-                }
+                }, "StudentImageFile", studentCreateDTO.StudntIdImageFile.FileName);
             }
+            
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("Multipart/form-data"));
+
+            return await client.PostAsync("FileUpload", formData);
         }
 
         [HttpPost, ActionName("Delete")]

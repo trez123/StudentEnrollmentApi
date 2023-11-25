@@ -21,27 +21,55 @@
     <header style="position: absolute; z-index: 999; width:100%">
         <nav class="navbar navbar-expand-lg navbar-toggleable-sm navbar-light bg-transparent w-100">
             <div class="d-flex justify-content-between w-100 px-5">
-                <a class="navbar-brand fs-2 text-light" asp-area="" asp-controller="Home" asp-action="Index" style="font-family: 'Irish Grover';"><img src="/images/logo.svg"><span class="tab"></span>Timothy Shalamat School</a>
+                <a class="navbar-brand fs-2 text-light" asp-area="" asp-controller="Home" asp-action="Index" style="font-family: 'Irish Grover'; color: @ViewBag.TextColor !important"><img src="/images/logo.svg"><span class="tab"></span>Timothy Shalamat School</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="d-sm-inline-flex justify-content-between align-items-center">
+                    @{
+                        string? session = Context.Session.GetString("Roles");
+                    }
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">WHY US?</a>
+                            <a class="nav-link text-light"  style="color: @ViewBag.TextColor !important" asp-area="" asp-controller="Home" asp-action="Index">WHY US?</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">ABOUT US</a>
+                            <a class="nav-link text-light"style="color: @ViewBag.TextColor !important" asp-area="" asp-controller="Home" asp-action="Privacy">ABOUT US</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">CONTACT US</a>
+                            <a class="nav-link text-light" style="color: @ViewBag.TextColor !important" asp-area="" asp-controller="Home" asp-action="Privacy">CONTACT US</a>
+                        </li>
+                        @if(session != null)
+                        {
+                            string[] roles = Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(session)!;
+                            if(roles.Contains("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" style="color: @ViewBag.TextColor !important" asp-area="" asp-controller="Students" asp-action="Index">STUDENTS DASHBOARD</a>
+                                </li>
+                            }
+                            if(roles.Contains("Admin") || roles.Contains("Chef"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" style="color: @ViewBag.TextColor !important" asp-area="" asp-controller="Menu" asp-action="Index">MENU DASHBOARD</a>
+                                </li>
+                            }
+                        }
+                        <li class="nav-item">
+                            @if(session == null)
+                            {
+                            <a class="nav-link text-light" style="color: @ViewBag.TextColor !important" asp-area="" asp-controller="Auth" asp-action="Login">LOG IN</a>
+                            }else
+                            {
+                            <a class="nav-link text-light" style="color: @ViewBag.TextColor !important" asp-area="" asp-controller="Auth" asp-action="LogOut">LOG OUT</a>
+                            }
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light pr-4" style="margin-right: 2rem;" asp-area="" asp-controller="Home" asp-action="Privacy">PROGRAMS</a>
+                            <a class="nav-link text-light pr-4" style="margin-right: 2rem; color: @ViewBag.TextColor !important" asp-area="" asp-controller="Home" asp-action="Privacy">PROGRAMS</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-light" style="color: #F68836; border-radius: 999px;" asp-area="" asp-controller="Home" asp-action="Privacy">ENROLL NOW</a>
+                            <a class="btn btn-light" style="color: #F68836; border-radius: 999px; border-color: @ViewBag.ButtonColor" asp-area="" asp-controller="Students" asp-action="Upsert">ENROLL NOW</a>
                         </li>
                     </ul>
                 </div>

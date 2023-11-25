@@ -7,6 +7,7 @@ namespace StudentEnrollmentFrontend.Models
         [Key]
         public int Id { get; set; }
 
+        [Display (Name = "Meal Type Name")]
         public string? MealTypeName { get; set; }
     }
 }

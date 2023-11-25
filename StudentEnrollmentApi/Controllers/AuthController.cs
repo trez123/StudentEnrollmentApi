@@ -34,10 +34,9 @@ namespace StudentEnrollmentApi.Controllers
             var result = await _authService.Login(user);
             if(result == true)
             {
-                var token = await _authService.GenerateToken(user);
                 var role = await _authService.GetRoles(user); 
-                return Ok(new {status = "Success", message = "Login Successful", data = token, roles = role
-                });
+                var token = _authService.GenerateToken(user);
+                return Ok(new {status = "Success", message = "Login Successful", data = token, roles = role });
             }
             return BadRequest(new {status = "fail", message = "Login Failed"});
 

@@ -7,6 +7,7 @@ namespace StudentEnrollmentFrontend.Models
         [Key]
         public int Id { get; set; }
 
+        [Display (Name ="Size Name")]
         public string? SizeName { get; set; }
     }
 }
