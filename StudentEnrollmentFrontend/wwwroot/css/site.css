@@ -53,3 +53,8 @@ hr.rounded {
 .inverted-color{
   color: black !important;
 }
+
+.menu:nth-child(1) h3
+{
+  color: #ED6468 !important;
+}

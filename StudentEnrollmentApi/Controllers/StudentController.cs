@@ -54,8 +54,6 @@ namespace StudentEnrollmentApi.Controllers
         [Route("FileUpload")]
         public async Task<IActionResult> CreateStudentWithFile([FromForm] StudentCreateDTO studentCreateDTO)
         {
-            if (ModelState.IsValid)
-            {
                 var studentImageFile = studentCreateDTO.StudntIdImageFile;
 
                 if(studentImageFile != null && studentImageFile.Length > 0)
@@ -74,10 +72,10 @@ namespace StudentEnrollmentApi.Controllers
                         StudentName = studentCreateDTO.StudentName,
                         EmailAddress = studentCreateDTO.EmailAddress,
                         PhoneNumber = studentCreateDTO.PhoneNumber,
-                        ProgramId = studentCreateDTO.ProgramId,
-                        ParishId = studentCreateDTO.ParishId,
-                        SizeId = studentCreateDTO.SizeId,
-                        StudentImageFilePath = apiFilePath != String.Empty ? apiFilePath : ""
+                        ProgramId = Convert.ToInt32(studentCreateDTO.ProgramId),
+                        ParishId = Convert.ToInt32(studentCreateDTO.ParishId),
+                        SizeId = Convert.ToInt32(studentCreateDTO.SizeId),
+                        StudentImageFilePath = fileName != String.Empty ? fileName : ""
                     };
 
                     _context.Students.Add(student);
@@ -85,9 +83,8 @@ namespace StudentEnrollmentApi.Controllers
 
                     return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
                 }
-            }
-            
-            return BadRequest(ModelState);
+
+                return Problem("Entity set 'studentImageFile' is null.");
         }
 
         [HttpGet("files/{filename}")]

@@ -9,7 +9,6 @@ namespace StudentEnrollmentFrontend.Controllers
 {
     public class MenuController : Controller
     {
-        const string API_URL = "https://localhost:7240/api/Menu/";
         const string SESSION_AUTH = "Student";
         private readonly IHttpClientFactory _clientHandler;
         public MenuController(IHttpClientFactory clientHandler)
@@ -26,15 +25,36 @@ namespace StudentEnrollmentFrontend.Controllers
             HttpClient studentClient = _clientHandler.CreateClient("MenuAPI");
             studentClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await studentClient.GetAsync("");
+            HttpResponseMessage response = await studentClient.GetAsync("");
 
             if (response.IsSuccessStatusCode)
             {
-                var content = await response.Content.ReadAsStringAsync();
+                string content = await response.Content.ReadAsStringAsync();
 
-                var productList = JsonConvert.DeserializeObject<List<Menu>>(content);
+                List<Menu> MenuList = JsonConvert.DeserializeObject<List<Menu>>(content)!;
 
-                return View(productList);
+                List<MenuImageViewModel> ImageList = new();
+
+                foreach(Menu menu in MenuList)
+                {
+                    HttpResponseMessage MenuImage = await studentClient.GetAsync($"files/{menu.MenuImageFilePath}");
+                    if (MenuImage.IsSuccessStatusCode)
+                    {
+                        byte[] imageBytes = await MenuImage.Content.ReadAsByteArrayAsync();
+                        string contentType = MenuImage.Content.Headers.ContentType!.ToString();
+
+                        MenuImageViewModel imageView = new()
+                        {
+                            Menu = menu, 
+                            ImageBytes = imageBytes, 
+                            ContentType = contentType 
+                        };
+
+                        ImageList.Add(imageView);
+                    }
+                }
+
+                return View(ImageList.Take(3));
             }
 
             else
@@ -136,6 +156,9 @@ namespace StudentEnrollmentFrontend.Controllers
 
         public async Task<IActionResult> Upsert(MenuVM menuvm)
         {
+            ViewBag.TextColor = "black";
+            ViewBag.ButtonColor = "#ED6468";
+
             if (!ModelState.IsValid) return View(menuvm);
 
             MenuCreateDTO menu = new()
@@ -150,7 +173,7 @@ namespace StudentEnrollmentFrontend.Controllers
 
             if (menuvm.Id == 0)
             {
-                var response = await SendStudentToApi(menu);
+                var response = await SendMenuToApi(menu);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -164,7 +187,7 @@ namespace StudentEnrollmentFrontend.Controllers
             }
             else
             {
-                var response = await SendStudentToApi(menu);
+                var response = await SendMenuToApi(menu);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -178,12 +201,12 @@ namespace StudentEnrollmentFrontend.Controllers
             }
         }
 
-        private static async Task<HttpResponseMessage> SendStudentToApi(MenuCreateDTO menuCreateDTO)
+        private async Task<HttpResponseMessage> SendMenuToApi(MenuCreateDTO menuCreateDTO)
         {
-            using var httpClient = new HttpClient();
-            using var formData = new MultipartFormDataContent();
-            formData.Headers.ContentType!.MediaType = "multipart/form-data";
+            HttpClient client = _clientHandler.CreateClient("MenuAPI");
 
+            MultipartFormDataContent formData = new();
+            formData.Headers.ContentType!.MediaType = "multipart/form-data";
             formData.Add(new StringContent(menuCreateDTO.Starch!), "Starch");
             formData.Add(new StringContent(menuCreateDTO.Beverage!), "Beverage");
             formData.Add(new StringContent(menuCreateDTO.Meat!), "Meat");
@@ -198,14 +221,9 @@ namespace StudentEnrollmentFrontend.Controllers
                                 ContentLength = menuCreateDTO.MenuIdImageFile.Length,
                                 ContentType = new MediaTypeHeaderValue(menuCreateDTO.MenuIdImageFile.ContentType)
                             }
-                }, "MenuImageFile", menuCreateDTO.MenuIdImageFile.FileName);
+                }, "MenuIdImageFile", menuCreateDTO.MenuIdImageFile.FileName);
             }
-
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("Multipart/form-data"));
-
-            //var response = _clientHandler.CreateClient("StudentAPI").PostAsync("FileUpload", formData).Result;
-
-            return await httpClient.PostAsync(API_URL + "FileUpload", formData);
+            return await client.PostAsync("FileUpload", formData);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -214,7 +232,7 @@ namespace StudentEnrollmentFrontend.Controllers
         {
             string token = HttpContext.Session.GetString(SESSION_AUTH)!;
             if(string.IsNullOrEmpty(token)) return RedirectToAction("Login","Auth");
-            HttpClient studentClient = _clientHandler.CreateClient("StudentAPI");
+            HttpClient studentClient = _clientHandler.CreateClient("MenuAPI");
             studentClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await studentClient.DeleteAsync($"{id}");

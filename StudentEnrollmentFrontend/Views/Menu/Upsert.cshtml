@@ -8,7 +8,7 @@
     <div class="col-md-6 offset-md-3">
         <h4 style="color: #ED6468;">Meal Creation</h4>
         <hr />
-        <form asp-action="Upsert">
+        <form asp-action="Upsert" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Starch" class="control-label"></label>
@@ -39,7 +39,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="MenuIdImageFile" class="control-label"></label>
-                <input type="file" multiple name="files" id="MenuIdImageFile" class="form-control" />
+                <input asp-for="MenuIdImageFile" multiple class="form-control" />
                 <span asp-validation-for="MenuIdImageFile" class="text-danger"></span>
             </div>
             <div class="row mt-2">

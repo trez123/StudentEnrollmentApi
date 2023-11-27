@@ -54,8 +54,6 @@ namespace StudentEnrollmentApi.Controllers
         [Route("FileUpload")]
         public async Task<IActionResult> CreateMenuWithFile([FromForm] MenuCreateDTO menuCreateDTO)
         {
-            if (ModelState.IsValid)
-            {
                 var studentImageFile = menuCreateDTO.MenuIdImageFile;
 
                 if(studentImageFile != null && studentImageFile.Length > 0)
@@ -75,8 +73,8 @@ namespace StudentEnrollmentApi.Controllers
                         Meat = menuCreateDTO.Meat,
                         Beverage = menuCreateDTO.Beverage,
                         Vegetable = menuCreateDTO.Vegetable,
-                        MealTypeId = menuCreateDTO.MealTypeId,
-                        MenuImageFilePath = apiFilePath != String.Empty ? apiFilePath : ""
+                        MealTypeId = Convert.ToInt32(menuCreateDTO.MealTypeId),
+                        MenuImageFilePath = fileName != String.Empty ? fileName : ""
                     };
 
                     _context.Menus.Add(menu);
@@ -84,9 +82,8 @@ namespace StudentEnrollmentApi.Controllers
 
                     return CreatedAtAction(nameof(GetMenuById), new { id = menu.Id }, menu);
                 }
-            }
             
-            return BadRequest(ModelState);
+            return BadRequest("Image Is Null");
         }
 
         [HttpGet("files/{filename}")]

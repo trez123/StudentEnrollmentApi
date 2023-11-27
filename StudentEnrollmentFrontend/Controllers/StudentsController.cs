@@ -11,9 +11,11 @@ namespace StudentEnrollmentFrontend.Controllers
     {
         const string SESSION_AUTH = "Student";
         private readonly IHttpClientFactory _clientHandler;
-        public StudentsController(IHttpClientFactory clientHandler)
+        private readonly ILogger<StudentsController> _logger;
+        public StudentsController(IHttpClientFactory clientHandler, ILogger<StudentsController> logger)
         {
             this._clientHandler = clientHandler;
+            this._logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -21,7 +23,7 @@ namespace StudentEnrollmentFrontend.Controllers
             ViewBag.TextColor = "black";
             ViewBag.ButtonColor = "#ED6468";
             string token = HttpContext.Session.GetString(SESSION_AUTH)!;
-            if(string.IsNullOrEmpty(token)) return RedirectToAction("Index","Login");
+            if(string.IsNullOrEmpty(token)) return RedirectToAction("Login","Auth");
             HttpClient studentClient = _clientHandler.CreateClient("StudentAPI");
             studentClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -164,6 +166,9 @@ namespace StudentEnrollmentFrontend.Controllers
 
         public async Task<IActionResult> Upsert(StudentVM studentvm)
         {
+            ViewBag.TextColor = "black";
+            ViewBag.ButtonColor = "#ED6468";
+
             if (!ModelState.IsValid) return View(studentvm);
 
             var student = new StudentCreateDTO
@@ -179,21 +184,23 @@ namespace StudentEnrollmentFrontend.Controllers
 
             if (studentvm.Id == 0)
             {
-                var response = await SendStudentToApi(student);
+                HttpResponseMessage response = await SendStudentToApi(student);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("EnrollmentComplete", "Home");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Product creation failed");
+                    ModelState.AddModelError(string.Empty, "Student creation failed");
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    _logger.LogError($"Student creation failed. Response content: {responseContent}");
                     return View(studentvm);
                 }
             }
             else
             {
-                var response = await SendStudentToApi(student);
+                HttpResponseMessage response = await SendStudentToApi(student);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -201,7 +208,7 @@ namespace StudentEnrollmentFrontend.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Product edit failed");
+                    ModelState.AddModelError(string.Empty, "Student edit failed");
                     return View(studentvm);
                 }
             }
@@ -216,9 +223,9 @@ namespace StudentEnrollmentFrontend.Controllers
             formData.Add(new StringContent(studentCreateDTO.StudentName!), "StudentName");
             formData.Add(new StringContent(studentCreateDTO.EmailAddress!), "EmailAddress");
             formData.Add(new StringContent(studentCreateDTO.PhoneNumber!), "PhoneNumber");
-            formData.Add(new StringContent(studentCreateDTO.SizeId.ToString()), "SizeId");
             formData.Add(new StringContent(studentCreateDTO.ParishId.ToString()), "ParishId");
             formData.Add(new StringContent(studentCreateDTO.ProgramId.ToString()), "ProgramId");
+            formData.Add(new StringContent(studentCreateDTO.SizeId.ToString()), "SizeId");
 
             if (studentCreateDTO.StudntIdImageFile != null && studentCreateDTO.StudntIdImageFile.Length > 0)
             {
@@ -228,19 +235,22 @@ namespace StudentEnrollmentFrontend.Controllers
                                 ContentLength = studentCreateDTO.StudntIdImageFile.Length,
                                 ContentType = new MediaTypeHeaderValue(studentCreateDTO.StudntIdImageFile.ContentType)
                             }
-                }, "StudentImageFile", studentCreateDTO.StudntIdImageFile.FileName);
+                }, "StudntIdImageFile", studentCreateDTO.StudntIdImageFile.FileName);
             }
             
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("Multipart/form-data"));
-
-            return await client.PostAsync("FileUpload", formData);
+           return await client.PostAsync("FileUpload", formData);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var httpClient = _clientHandler.CreateClient("StudentAPI");
+            string token = HttpContext.Session.GetString(SESSION_AUTH)!;
+            if(string.IsNullOrEmpty(token)) return RedirectToAction("Login","Auth");
+
+            HttpClient httpClient = _clientHandler.CreateClient("StudentAPI");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var response = await httpClient.DeleteAsync($"{id}");
             if (response.IsSuccessStatusCode)
             {
