@@ -3,16 +3,55 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="wrap">
-    <img src="/images/background-img-crop.jpg" class="w-100"></img>
-    <div class="content w-100 h-100 d-flex justify-content-between align-items-center background-image-cover px-3">
-        <i class="fa-solid fa-chevron-left fa-2xs" style="color: white; font-size: 5rem;"></i>
-        <div class="d-flex flex-column justify-content-center align-items-center">
-            <h1 class="title m-0">Unleash</h1>
-            <p class="text-light fs-1 m-0">your child’s full potential</p>
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+  <ol class="carousel-indicators">
+    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+  </ol>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <div class="wrap">
+            <img src="/images/books.jpg" class="w-100" alt="First slide">
+            <div class="content w-100 h-100 d-flex justify-content-center align-items-center background-image-cover px-3">
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    <h1 class="title m-0">Inspire</h1>
+                    <p style="font-size: 2rem;" class="text-light m-0">a love of learning</p>
+                </div>
+            </div>
         </div>
-        <i class="fa-solid fa-chevron-right" style="color: white; font-size: 5rem;"></i>
     </div>
+    <div class="carousel-item">
+        <div class="wrap">
+            <img src="/images/background-img-crop.jpg" class="w-100" alt="Second slide">
+            <div class="content w-100 h-100 d-flex justify-content-center align-items-center background-image-cover px-3">
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    <h1 class="title m-0">Unleash</h1>
+                    <p style="font-size: 2rem;" class="text-light m-0">your child’s full potential</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="carousel-item">
+     <div class="wrap">
+            <img src="/images/utensils.jpg" class="w-100" alt="Third slide">
+            <div class="content w-100 h-100 d-flex justify-content-center align-items-center background-image-cover px-3">
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    <h1 class="title m-0">Learn Deeply</h1>
+                    <p style="font-size: 2rem;" class="text-light m-0">learn forever</p>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+    <i class="fa-solid fa-chevron-left fa-2xs" style="color: white; font-size: 5rem;"></i>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+    <i class="fa-solid fa-chevron-right" style="color: white; font-size: 5rem;"></i>
+    <span class="sr-only">Next</span>
+  </a>
 </div>
 <div class="p-5 d-flex flex-column align-items-center">
     <h1 class="w-75 text-center mt-5">Welcome to Timothy Shalamat School: The Only Accredited High School In North County St Ann!</h1>
@@ -27,7 +66,7 @@
     <p class="w-75 text-center mt-5" style="color: #ED6468;">"We have 2 boys attending Timothy Shalamat School, and we transferred to Timothy Shalamat from a public school two years ago. Here are some of the things we appreciate about the school: the strong focus on fostering creativity and instilling a lifelong love of learning, the opportunity for students to learn two languages (Spanish and German) starting in 1st grade, the integration of movement into the learning process (perfect for my active boys), the immersive and experiential academic program, which minimizes the use of worksheets, the engaging music and games classes, the commitment to outdoor and nature-based education, the caring and dedicated teachers, and a multitude of other aspects that make Timothy Shalamat School a fantastic educational choice." <br><br> — Carolyn, Parent of Timothy Shalamat School Student</p>
 </div>
 <div class="wrap w-100 mt-5">
-    <img src="/images/sidebar-bg.svg" class="w-100"></img>
+    <img src="/images/sidebar-bg.svg" class="w-100">
     <div class="content w-100 h-100 d-flex justify-content-center align-items-center">
         <p class="text-light fs-3"><strong>FOLLOW US</strong> for a peek into our program</p>
     </div>

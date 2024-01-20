@@ -60,6 +60,18 @@ namespace StudentEnrollmentFrontend.Controllers
             return View();
         }
 
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
+
+        public IActionResult ContactUs()
+        {
+            ViewBag.TextColor = "black";
+            ViewBag.ButtonColor = "#ED6468";
+            return View();
+        }
+
         public IActionResult EnrollmentComplete()
         {
             ViewBag.TextColor = "black";
