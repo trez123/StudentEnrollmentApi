@@ -40,7 +40,7 @@ public class AuthController : Controller
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Register");
+                return RedirectToAction("Login");
             }
             else
             {

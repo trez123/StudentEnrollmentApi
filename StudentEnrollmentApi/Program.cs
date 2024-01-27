@@ -28,7 +28,8 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options => {
+}).AddJwtBearer(options => 
+{
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateActor = true,
@@ -40,7 +41,11 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration.GetSection("JWTConfig:Audience").Value,
         IssuerSigningKey =  new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWTConfig:Key").Value!))
     };
-});
+}).AddGoogle(options => 
+{
+    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+});;
 
 builder.Services.AddTransient<IAuthService, AuthService>();
 

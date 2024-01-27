@@ -39,9 +39,16 @@ namespace StudentEnrollmentApi.Controllers
                 return Ok(new {status = "Success", message = "Login Successful", data = token, roles = role });
             }
             return BadRequest(new {status = "fail", message = "Login Failed"});
-
         }
 
+        [HttpGet ("GoogleLogin")]
+        [Authorize]
+        public ActionResult<string> GoogleLogin()
+        {
+            var user = this.User;
+
+            return "value";
+        }
 
         
     }

@@ -1,17 +1,17 @@
 @model StudentEnrollmentFrontend.Models.User
 
 @{
-    ViewData["Title"] = "Register New Employee";
+    ViewData["Title"] = "Register Account";
 }
 
 <div class="row mt-5 pt-5 min-vh-100">
-    <div class="col-sm-8 offset-md-3">
-        <h1 style="color: #ED6468;">@ViewData["Title"]</h1>
-        <div class="row">
-            <div class="col-md-8">
+    <div class="col w-50">
+        <h1  style="color: #ED6468;" class="text-center">@ViewData["Title"]</h1>
+        <div class="row justify-content-center">
+            <div  style="width: 30vw;">
                 <section>
-                    <form asp-action="Register" class="body-text">
-                        <h2>Register New Employee</h2>
+                    <form asp-action="Register">
+                        <h2 class="text-center">Register your new account</h2>
                         <hr />
                         <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                         <div class="form-floating mb-3">
@@ -24,6 +24,10 @@
                             <label asp-for="Password" type="password" class="form-label">Password</label>
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
+                        <div class="form-floating mb-3">
+                            <input  class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                            <label  type="password" class="form-label">Password Confirm</label>
+                        </div>
                         @* <div class="checkbox mb-3">
                             <label asp-for="Input.RememberMe" class="form-label">
                                 <input class="form-check-input" asp-for="Input.RememberMe" />
@@ -31,7 +35,7 @@
                             </label>
                         </div> *@
                         <div>
-                            <button id="login-submit" type="submit" class="w-100 btn btn-lg text-light" style="background-color: #ED6468;;">Log in</button>
+                            <button id="login-submit" type="submit" class="w-100 btn btn-lg text-light" style="background-color: #ED6468;;">Register</button>
                         </div>
                         @*<div>
                             <p>
