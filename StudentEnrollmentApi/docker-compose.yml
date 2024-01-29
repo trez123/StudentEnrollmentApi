@@ -1,0 +1,7 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  student-enrollment-api:
+    image: student-enrollment-api
+    container_name: student-enrollment-api-app
+    ports:
+      - "8080:80"

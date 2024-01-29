@@ -5,17 +5,17 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient("StudentAPI", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:7240/api/Student/");
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("ApiUrls:Student").Value);
 });
 
 builder.Services.AddHttpClient("MenuAPI", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:7240/api/Menu/");
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("ApiUrls:Menu").Value);
 });
 
 builder.Services.AddHttpClient("AuthAPI", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:7240/api/Auth/");
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("ApiUrls:Auth").Value);
 });
 
 builder.Services.AddDistributedMemoryCache();
@@ -41,7 +41,6 @@ app.UseSession();
 
 app.UseCookiePolicy();
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

@@ -67,8 +67,6 @@ namespace StudentEnrollmentFrontend.Controllers
 
         public IActionResult ContactUs()
         {
-            ViewBag.TextColor = "black";
-            ViewBag.ButtonColor = "#ED6468";
             return View();
         }
 

@@ -1,0 +1,7 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  student-enrollment-frontend:
+    image: student-enrollment-frontend
+    container_name: student-enrollment-frontend-app
+    ports:
+      - "5050:50"
