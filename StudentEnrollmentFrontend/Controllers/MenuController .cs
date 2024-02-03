@@ -246,7 +246,5 @@ namespace StudentEnrollmentFrontend.Controllers
                 return RedirectToAction("Index");
             }
         }
-
-
     }
 }

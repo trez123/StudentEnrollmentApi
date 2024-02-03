@@ -17,7 +17,7 @@ namespace StudentEnrollmentApi.Services
             this._userManager = userManager;
             this._config = config;
         }
-        public async Task<bool> RegisterUser(User user)
+        public async Task<IdentityResult> RegisterUser(User user)
         {
             IdentityUser identityUser = new()
             {
@@ -27,7 +27,7 @@ namespace StudentEnrollmentApi.Services
 
             IdentityResult result = await _userManager.CreateAsync(identityUser, user.Password);
 
-            return result.Succeeded;
+            return result;
         }
 
         public async Task<bool> Login(User user)

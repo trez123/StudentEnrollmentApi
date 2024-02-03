@@ -2,6 +2,7 @@ using StudentEnrollmentApi.Models;
 using StudentEnrollmentApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace StudentEnrollmentApi.Controllers
 {
@@ -17,15 +18,16 @@ namespace StudentEnrollmentApi.Controllers
         }
 
         [HttpPost ("register")]
-        [Authorize (Roles = "Admin")]
         public async Task<IActionResult> Register(User user)
         {
-            if (await _authService.RegisterUser(user))
+            IdentityResult result = await _authService.RegisterUser(user); 
+
+            if (result.Succeeded)
             {
-                return Ok(new { status = "Success", message = "User Registration Successfull" });
+                return Ok(new { status = "Success", message = "User Registration Successfull"});
             }
 
-            return BadRequest(new { status = "Failed", message = "User Registration Failed" });
+            return BadRequest(new { status = "Failed", message = "User Registration Failed", data = result});
         }
 
         [HttpPost ("login")]

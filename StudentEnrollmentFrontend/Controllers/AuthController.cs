@@ -29,7 +29,7 @@ public class AuthController : Controller
 
 
     [HttpPost]
-    public IActionResult Register(User user)
+    public async Task<IActionResult> Register(User user)
     {
         if(ModelState.IsValid)
         {
@@ -40,16 +40,33 @@ public class AuthController : Controller
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Login");
+                await Login(user);
+                return RedirectToAction("Index", "Home");
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "register failed");
+                string responseContent = await response.Content.ReadAsStringAsync();
+                Dictionary<string, object> responseData = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseContent)!;
+                if(responseData.ContainsKey("data") && responseData["data"] is JObject jObject)
+                {
+                    if(jObject.ContainsKey("errors") && jObject["errors"] is JArray jArray)
+                        {
+                            foreach(JObject error in jArray.Cast<JObject>()) 
+                            {
+                                ModelState.AddModelError(string.Empty, $"register failed");
+                                ModelState.AddModelError(string.Empty, error["description"]!.ToString());
+                            }
+                        } else
+                        {
+                        Console.WriteLine($"roles dont exist");
+                        }
+                }
                 return View(user);
             }
         }
         return View(user);
     }
+
 
     [HttpGet]
     public IActionResult Login()

@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  student-enrollment-frontend:
+    image: student-enrollment-frontend
+    container_name: student-enrollment-frontend-app
+    ports:
+      - "55014:80"
+    networks:
+      - network1
+    depends_on:
+      - student-enrollment-api
+
+  student-enrollment-api:
+    image: student-enrollment-api
+    container_name: student-enrollment-api-app
+    ports:
+      - "55015:80"
+    networks:
+      - network1
+    # depends_on:
+    #   - sql-server
+
+  # sql-server:
+  #   image: mcr.microsoft.com/mssql/server
+  #   container_name: sql-server
+  #   environment:
+  #     SA_PASSWORD: "SilasColey@1"  # Set a secure SA password
+  #     ACCEPT_EULA: "Y"
+  #   ports:
+  #     - "1433:1433"
+  #   networks:
+  #     - network1
+
+networks:
+  network1:
+    driver: bridge

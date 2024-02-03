@@ -123,6 +123,32 @@ namespace StudentEnrollmentApi.Utilities
                 await context.SaveChangesAsync();
             }
 
+            Size? size2 = new()
+            {
+                SizeName = "Medium"
+            };
+
+            Size? sizeSearch2 = await context.Sizes.FirstOrDefaultAsync(x => x.SizeName == size2.SizeName);
+
+            if(sizeSearch2 == null)
+            {
+                context.Sizes.Add(size2);
+                await context.SaveChangesAsync();
+            }
+
+            Size? size3 = new()
+            {
+                SizeName = "Large"
+            };
+
+            Size? sizeSearch3 = await context.Sizes.FirstOrDefaultAsync(x => x.SizeName == size3.SizeName);
+
+            if(sizeSearch3 == null)
+            {
+                context.Sizes.Add(size3);
+                await context.SaveChangesAsync();
+            }
+
             MealType breakfat = new()
             {
                 MealTypeName = "Breakfast"
@@ -151,12 +177,12 @@ namespace StudentEnrollmentApi.Utilities
 
             MealType dinner = new()
             {
-                MealTypeName = "Lunch"
+                MealTypeName = "Dinner"
             };
 
             MealType? dinnerSearch = await context.MealTyes.FirstOrDefaultAsync(x => x.MealTypeName == dinner.MealTypeName);
 
-            if(breakfastSearch == null)
+            if(dinnerSearch == null)
             {
                 context.MealTyes.Add(dinner);
                 await context.SaveChangesAsync();

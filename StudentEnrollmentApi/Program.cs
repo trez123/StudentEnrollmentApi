@@ -16,7 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<StudentsDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("LinuxApiConnection")));
+builder.Services.AddDbContext<StudentsDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("KeandoServer")));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {

@@ -49,12 +49,12 @@
                                     <a class="nav-link text-light" style="color: @ViewBag.TextColor !important" asp-area="" asp-controller="Students" asp-action="Index">STUDENTS DASHBOARD</a>
                                 </li>
                             }
-                            if(roles.Contains("Admin") || roles.Contains("Chef"))
+                             if(roles.Contains("Admin") || roles.Contains("Chef"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-light" style="color: @ViewBag.TextColor !important" asp-area="" asp-controller="Menu" asp-action="Index">MENU DASHBOARD</a>
                                 </li>
-                            }
+                            } 
                         }
                         <li class="nav-item">
                             @if(session == null)
